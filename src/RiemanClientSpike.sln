@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiemanClientSpike", "RiemanClientSpike\RiemanClientSpike.csproj", "{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiemannClientTests", "RiemannClientTests\RiemannClientTests.csproj", "{6242DB26-AE00-49AC-A56A-23DC814684C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoClient", "DemoClient\DemoClient.csproj", "{83D10184-AA6B-4BF0-AD45-ACC39B2D6E43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6242DB26-AE00-49AC-A56A-23DC814684C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6242DB26-AE00-49AC-A56A-23DC814684C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6242DB26-AE00-49AC-A56A-23DC814684C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6242DB26-AE00-49AC-A56A-23DC814684C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83D10184-AA6B-4BF0-AD45-ACC39B2D6E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83D10184-AA6B-4BF0-AD45-ACC39B2D6E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83D10184-AA6B-4BF0-AD45-ACC39B2D6E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83D10184-AA6B-4BF0-AD45-ACC39B2D6E43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

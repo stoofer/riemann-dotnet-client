@@ -11,20 +11,38 @@ namespace RiemanClientSpike
 {
     public class RiemannTcpClient : IDisposable
     {
-        private readonly TcpClient client;
+        private readonly string hostname;
+        private readonly int port;
+        private TcpClient client;
 
-        public RiemannTcpClient(string host = "localhost", int port = 5555)
+        public RiemannTcpClient(string hostname = "localhost", int port = 5555)
         {
-            //TODO - add a connect method instead?
-            client = new TcpClient(host, port);
+            this.hostname = hostname;
+            this.port = port;
         }
 
         public void Dispose()
         {
-            client.Close();
+            Close();
         }
 
-        public void SendEvent(string host = null, float? metric = null, string service = null, string state = "ok", string description = null)
+        public void Close()
+        {
+            if (client == null) return;
+
+            client.Close();
+            client = null;
+        }
+
+        public void SendEvent(
+            string host = null, 
+            float? metric = null, 
+            string service = null, 
+            string state = "ok", 
+            string description = null,
+            float? ttl = null,
+            IEnumerable<string> tags = null,
+            DateTime? timestamp = null)
         {
             var stateEntry = new State
                                  {
@@ -32,30 +50,64 @@ namespace RiemanClientSpike
                                      Service = service,
                                      state = state,
                                      metric_f = metric,
-                                     Description = description
+                                     Description = description,
+                                     TTL = ttl,
+                                     Tags = (tags ?? new string[0]).ToArray(),
+                                     Time = timestamp.ToUnixEpochSeconds()
                                  };
 
             var message = new Msg{states =new[]{stateEntry}};
-            var tcpStream = client.GetStream();
-            Serializer.SerializeWithLengthPrefix(tcpStream, message, PrefixStyle.Fixed32BigEndian);
             
-            //TODO - test cases for sad path.
-            var result = Serializer.DeserializeWithLengthPrefix<Msg>(tcpStream, PrefixStyle.Fixed32BigEndian);
+            //TODO - what if it fails....?
+            var _ = SendAndReceive(message);
         }
 
         public IEnumerable<Event> Query(string query)
         {
             var message = new Msg
-                              {
-                                  states = new []{new State{Description = "test query", Service = "tests", state = "info"}, },
-                                  query = new Query{QueryString = query}
-                              };
+            {
+                states = new []{new State{Description = "test query", Service = "tests", state = "info"}, },
+                query = new Query{QueryString = query}
+            };
 
-            var tcpStream = client.GetStream();
+            var repsonse = SendAndReceive(message);
+            return repsonse.events ?? new Event[0];
+        }
+
+        //TODO - make async.
+        private Msg SendAndReceive(Msg message)
+        {
+            var tcpStream = Connect();
             Serializer.SerializeWithLengthPrefix(tcpStream, message, PrefixStyle.Fixed32BigEndian);
-            var result = Serializer.DeserializeWithLengthPrefix<Msg>(tcpStream, PrefixStyle.Fixed32BigEndian);
 
-            return result.events ?? new Event[0];
+            var response = Serializer.DeserializeWithLengthPrefix<Msg>(tcpStream, PrefixStyle.Fixed32BigEndian);
+
+            //TODO - test cases for sad path.
+            
+            return response;
+        }
+
+        public IObservable<Exception> Errors { get; private set; }
+ 
+        private NetworkStream Connect()
+        {
+            client = client ?? new TcpClient(hostname, port);
+            return client.GetStream();
+        }
+    }
+
+    public static class Conversions
+    {
+        public static long? ToUnixEpochSeconds(this DateTime? localDateTime)
+        {
+            if (!localDateTime.HasValue)
+            {
+                return null;
+            }
+
+            var timeSinceEpoch = (localDateTime.Value.ToUniversalTime() - new DateTime(1970, 1, 1));
+            return (int)timeSinceEpoch.TotalSeconds;
+
         }
     }
 }

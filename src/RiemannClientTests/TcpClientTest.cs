@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using NUnit.Framework;
-using RiemanClientSpike;
-using com.aphyr.riemann;
+using RiemanClient;
+using RiemanClient.Contract;
 
 namespace RiemannClientTests
 {
@@ -15,18 +15,18 @@ namespace RiemannClientTests
         [Test]
         public void Publishing_state_is_written_to_riemann_index()
         {
-            var serviceName = "TcpClientTest " + Guid.NewGuid();
+            var serviceName = "TcpClientTest#" + Guid.NewGuid();
             var description = Guid.NewGuid().ToString();
             var metric = DateTime.Now.Ticks;
             const float timeToLive = 110.5f;
             const string host = "tests";
             var tags = new[] {"tag1", "tag2"};
 
-            IEnumerable<Event> results;
+            IEnumerable<EventRecord> results;
 
             using (var client = new RiemannTcpClient())
             {
-                client.SendEvent(tags: tags,
+                client.Send(tags: tags,
                                  host: host,
                                  service: serviceName,
                                  state: "ok",
@@ -53,11 +53,11 @@ namespace RiemannClientTests
             var time = DateTime.UtcNow;
             int expectedTimestamp = (int)(time - new DateTime(1970, 1, 1)).TotalSeconds;
 
-            List<Event> results;
+            List<EventRecord> results;
             using (var client = new RiemannTcpClient())
             {
                 const string serviceName = "Should_convert_time_to_unix_epoch_seconds";
-                client.SendEvent(host: "tests",
+                client.Send(host: "tests",
                                  service: serviceName,
                                  state: "ok",
                                  timestamp: time);

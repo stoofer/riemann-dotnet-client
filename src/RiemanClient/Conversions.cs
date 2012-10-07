@@ -11,9 +11,15 @@ namespace RiemanClient
                 return null;
             }
 
-            var timeSinceEpoch = (localDateTime.Value.ToUniversalTime() - new DateTime(1970, 1, 1));
-            return (int)timeSinceEpoch.TotalSeconds;
+            return localDateTime.Value.ToUnixEpochSeconds();
 
         }
+        public static long ToUnixEpochSeconds(this DateTime localDateTime)
+        {
+            var timeSinceEpoch = (localDateTime.ToUniversalTime() - new DateTime(1970, 1, 1));
+            return (long)timeSinceEpoch.TotalSeconds;
+
+        }
+
     }
 }

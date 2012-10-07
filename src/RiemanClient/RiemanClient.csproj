@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Contract\Message.cs" />
     <Compile Include="Contract\EventRecord.cs" />
+    <Compile Include="Contract\MessageBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Contract\Query.cs" />
     <Compile Include="Contract\StateRecord.cs" />

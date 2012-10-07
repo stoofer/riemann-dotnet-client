@@ -5,9 +5,6 @@ namespace RiemanClient.Contract
     [ProtoContract]
     public class Query 
     {
-        public Query()
-        {}
-
         public Query(string query)
         {
             QueryString = query;

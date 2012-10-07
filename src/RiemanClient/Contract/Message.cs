@@ -19,5 +19,6 @@ namespace RiemanClient.Contract
 
         [ProtoMember(6)]
         public EventRecord[] Events { get; set; }
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using RiemanClient;
 using RiemanClient.Contract;
@@ -57,17 +58,16 @@ namespace RiemannClientTests
             using (var client = new RiemannTcpClient())
             {
                 const string serviceName = "Should_convert_time_to_unix_epoch_seconds";
-                client.Send(host: "tests",
+                client.SendAsync(host: "tests",
                                  service: serviceName,
                                  state: "ok",
-                                 timestamp: time);
+                                 timestamp: time).Wait();
 
                 results = client.Query(string.Format("service=\"{0}\"", serviceName)).ToList();
 
             }
             Assert.That(results.Any());
             Assert.That(results.Single().Time, Is.EqualTo(expectedTimestamp));
-            //TODO- now provide a nicer API...perhaps with some Noda?
         }
 
         [Test]
@@ -76,7 +76,39 @@ namespace RiemannClientTests
             using (var client = new RiemannTcpClient(port: 9999, hostname: "monkey-trumpets"))
             {
                 Assert.Throws<SocketException>(() => client.Query("anyone there..?"));
+                Assert.Throws<SocketException>(() => client.Send(host: "broken"));
             }
+        }
+
+        [Test]
+        public void Publishing_state_supports_asynch_mode()
+        {
+            var host = Guid.NewGuid().ToString();
+            const string serviceNameRoot = "TcpClientAsync#";
+            Guid.NewGuid().ToString();
+            
+            IEnumerable<EventRecord> results;
+
+            var states = from idx in Enumerable.Range(1, 1000)
+                         let state =
+                             new StateEntry(host: host,
+                                            service: serviceNameRoot + idx,
+                                            state: "ok", metric: idx,
+                                            timeToLiveInSeconds: 10)
+                         group state by idx%10
+                         into batches
+                         select batches;
+                        
+            
+            var tasks = states.Select(s => new RiemannTcpClient().SendAsync(s.ToArray())).ToArray();
+            Task.WaitAll(tasks);
+            using (var client = new RiemannTcpClient())
+            {
+                var query = string.Format("service=~ \"{0}%\"", serviceNameRoot);
+                results = client.QueryAsync(query).Result.ToList();
+            }
+            Assert.That(results.Count(), Is.EqualTo(1000));
+           
         }
     }
 }

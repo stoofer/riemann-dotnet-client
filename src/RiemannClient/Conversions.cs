@@ -1,6 +1,6 @@
 using System;
 
-namespace RiemanClient
+namespace RiemannClient
 {
     internal static class Conversions
     {

@@ -1,4 +1,4 @@
-namespace RiemanClient.Contract
+namespace RiemannClient.Contract
 {
     internal static class MessageBuilder
     {

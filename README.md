@@ -1,7 +1,4 @@
-Playpen Code
-============
+A C# Client for Riemann
+=======================
 
-Spiking a client for Riemann in C#
-Dumping into github while I rebuild my Windows VM
-
-Protocol buffer seems correct but there is no client yet as such.  Just silly play code.
+A basic TCP and UDP client for [Riemann][http://aphyr.github.com/riemann/]

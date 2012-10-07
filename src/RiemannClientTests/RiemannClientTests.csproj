@@ -65,9 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RiemanClient\RiemanClient.csproj">
+    <ProjectReference Include="..\RiemannClient\RiemannClient.csproj">
       <Project>{b7df1905-568f-40e3-9e46-5bc30d82dc6e}</Project>
-      <Name>RiemanClient</Name>
+      <Name>RiemannClient</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

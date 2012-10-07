@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>RiemannClient</id>
+    <version>0.0.1.1</version>
+    <title>Riemann Client</title>
+    <authors>Stuart Caborn</authors>
+    <owners>Stuart Caborn</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/stoofer/riemann-dotnet-client</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A client library for Riemann</description>
+    <copyright>Copyright 2012 Stuart Caborn</copyright>
+    <tags>Riemann</tags>
+    <dependencies>
+      <dependency id="protobuf-net" version="2.0.0.480" />
+    </dependencies>
+  </metadata>
+</package>

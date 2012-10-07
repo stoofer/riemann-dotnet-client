@@ -5,8 +5,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using RiemanClient;
-using RiemanClient.Contract;
+using RiemannClient;
+using RiemannClient.Contract;
 
 namespace RiemannClientTests
 {

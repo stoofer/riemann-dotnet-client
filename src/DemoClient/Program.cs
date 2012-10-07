@@ -1,6 +1,6 @@
 ﻿using System;
-using RiemanClient;
-using RiemanClient.Contract;
+using RiemannClient;
+using RiemannClient.Contract;
 
 namespace DemoClient
 {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiemanClient", "RiemanClient\RiemanClient.csproj", "{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiemannClient", "RiemannClient\RiemannClient.csproj", "{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiemannClientTests", "RiemannClientTests\RiemannClientTests.csproj", "{6242DB26-AE00-49AC-A56A-23DC814684C6}"
 EndProject

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using ProtoBuf;
-using RiemanClient.Contract;
+using RiemannClient.Contract;
 
-namespace RiemanClient
+namespace RiemannClient
 {
     public sealed class RiemannUdpClient : IDisposable
     {

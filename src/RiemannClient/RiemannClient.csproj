@@ -7,8 +7,8 @@
     <ProjectGuid>{B7DF1905-568F-40E3-9E46-5BC30D82DC6E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RiemanClient</RootNamespace>
-    <AssemblyName>RiemanClient</AssemblyName>
+    <RootNamespace>RiemannClient</RootNamespace>
+    <AssemblyName>RiemannClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -60,9 +60,6 @@
     <None Include="protos\google\protobuf\descriptor.proto" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CHANGES.txt" />
-    <Content Include="licenses\license.txt" />
-    <Content Include="licenses\protoc-license.txt" />
     <Content Include="riemann.proto" />
   </ItemGroup>
   <ItemGroup>

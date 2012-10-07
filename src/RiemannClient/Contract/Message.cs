@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 
-namespace RiemanClient.Contract
+namespace RiemannClient.Contract
 {
     [ProtoContract]
     public class Message {

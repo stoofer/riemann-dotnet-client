@@ -26,7 +26,7 @@ namespace RiemannClientTests
 
             IEnumerable<EventRecord> results;
 
-            using (var client = new RiemannUdpClient())
+            using (var client = new CompositeClient())
             {
                 client.Send(timestamp: DateTime.UtcNow,
                             host: host,
@@ -37,11 +37,6 @@ namespace RiemannClientTests
                             metric: metric,
                             description: description);
 
-                Thread.Sleep(1000);
-            }
-
-            using (var client = new RiemannTcpClient())
-            {
                 results = client.Query(string.Format("service=\"{0}\"", serviceName)).ToList();
             }
 
@@ -76,11 +71,11 @@ namespace RiemannClientTests
                          select batches;
 
 
-            var udpClient = new RiemannUdpClient();
+            var udpClient = new CompositeClient();
             var tasks = states.Select(s => udpClient.SendAsync(s.ToArray())).ToArray();
             Task.WaitAll(tasks);
             Thread.Sleep(2000);
-            using (var tcpClient = new RiemannTcpClient())
+            using (var tcpClient = new CompositeClient())
             {
                 var query = string.Format("service=~ \"{0}%\"", serviceNameRoot);
                 results = tcpClient.QueryAsync(query).Result.ToList();
@@ -92,10 +87,10 @@ namespace RiemannClientTests
         [Test]
         public void Publishing_messages_over_threshold_is_forbidden()
         {
-            using (var client = new RiemannUdpClient())
+            using (var client = new RiemannUdpClient(maxDatagramSize:19))
             {
-                Assert.Throws<InvalidOperationException>(() => 
-                    client.Send(description: String.Join("-",Enumerable.Repeat("123456789", 1638))));
+                Assert.Throws<AggregateException>(() => 
+                    client.SendAsync(new byte[20]).Wait());
             }
         }
     }

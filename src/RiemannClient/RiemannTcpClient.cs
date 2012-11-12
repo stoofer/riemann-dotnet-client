@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using ProtoBuf;
@@ -34,94 +32,22 @@ namespace RiemannClient
             client = null;
         }
 
-        public void Send(
-            string host = null, 
-            float? metric = null, 
-            string service = null, 
-            string state = "ok", 
-            string description = null,
-            float? ttl = null,
-            IEnumerable<string> tags = null,
-            DateTime? timestamp = null)
-        {
-            Send(new StateEntry(
-                     host: host,
-                     service: service,
-                     state: state,
-                     metric: metric,
-                     description: description,
-                     timeToLiveInSeconds: ttl,
-                     tags: (tags ?? new string[0]).ToArray(),
-                     timestamp: timestamp));
-        }
 
-        public async Task SendAsync(
-            string host = null, 
-            float? metric = null, 
-            string service = null, 
-            string state = "ok", 
-            string description = null,
-            float? ttl = null,
-            IEnumerable<string> tags = null,
-            DateTime? timestamp = null)
-        {
-            await SendAsync(new StateEntry(
-                     host: host,
-                     service: service,
-                     state: state,
-                     metric: metric,
-                     description: description,
-                     timeToLiveInSeconds: ttl,
-                     tags: (tags ?? new string[0]).ToArray(),
-                     timestamp: timestamp));
-        }
-
-        public void Send(params StateEntry[] states)
-        {
-            try
-            {
-                SendAsync(states).Wait();
-            }
-            catch (AggregateException ae)
-            {
-                throw ae.Flatten().InnerException;
-            }
-        }
-
-        public IEnumerable<EventRecord> Query(string query)
-        {
-            try
-            {
-                return QueryAsync(query).Result;
-            }
-            catch( AggregateException ae)
-            {
-                throw ae.Flatten().InnerException;
-            }
-        }
-
-        public async Task SendAsync(params StateEntry[] states)
-        {
-            await SendAndReceiveAsync(states.ToMessage());
-        }
-
-        public async Task<IEnumerable<EventRecord>> QueryAsync(string query)
-        {
-            var response = await SendAndReceiveAsync(query.ToMessage());
-            return response.Events ?? new EventRecord[0];
-        }
-
-        private async Task<Message> SendAndReceiveAsync(Message message)
+        public async Task<Message> SendAndReceiveAsync(byte[] message)
         {
             var tcpStream = await GetNetworkStream();
-            WriteRequest(message, tcpStream);
+            await WriteRequest(message, tcpStream);
             var response = await ReadResponseAsync(tcpStream);
             return response;
         }
 
-        private static void WriteRequest(Message message, NetworkStream tcpStream)
+        private static async Task WriteRequest(byte[] message, Stream tcpStream)
         {
-            Serializer.SerializeWithLengthPrefix(tcpStream, message, PrefixStyle.Fixed32BigEndian);
+            var lengthBigEndian = BitConverter.GetBytes(message.Length);
+            Array.Reverse(lengthBigEndian);
+            tcpStream.Write(lengthBigEndian, 0, lengthBigEndian.Length);
+            tcpStream.Write(message, 0, message.Length);
+            await tcpStream.FlushAsync();
         }
 
         private static Task<Message> ReadResponseAsync(Stream tcpStream)

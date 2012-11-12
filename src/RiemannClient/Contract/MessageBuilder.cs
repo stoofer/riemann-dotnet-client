@@ -1,3 +1,6 @@
+using System.IO;
+using ProtoBuf;
+
 namespace RiemannClient.Contract
 {
     internal static class MessageBuilder
@@ -10,6 +13,13 @@ namespace RiemannClient.Contract
         public static Message ToMessage(this StateEntry[] states)
         {
             return new Message { States = states };
+        }
+
+        public static byte[] Serialize(this Message message)
+        {
+            var stream = new MemoryStream();
+            Serializer.Serialize(stream, message);
+            return stream.ToArray();
         }
     }
 }

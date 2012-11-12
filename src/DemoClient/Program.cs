@@ -8,12 +8,13 @@ namespace DemoClient
     {
         static void Main()
         {
-            using(var client = new RiemannTcpClient())
+            var rand = new Random();
+            using(var client = new CompositeClient())
             {
                 client.Send(service: "Demo Client",state: "warn", description: "Simple event description");
 
                 client.Send(new StateEntry { Host = "c#", Service = "Demo Client (1)", State = "ok", Metric = 34.5f },
-                            new StateEntry { Service = "Demo Client (2)", Metric = 34.5f });
+                            new StateEntry { Service = "Demo Client (2)", Metric = rand.Next(100)  });
                 
                 var results = client.Query("service =~ \"Demo%\"");
 

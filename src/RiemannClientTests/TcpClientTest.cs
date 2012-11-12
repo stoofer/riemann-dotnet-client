@@ -25,7 +25,7 @@ namespace RiemannClientTests
 
             IEnumerable<EventRecord> results;
 
-            using (var client = new RiemannTcpClient())
+            using (var client = new CompositeClient(maxDatagramSize:0))
             {
                 client.Send(tags: tags,
                                  host: host,
@@ -55,7 +55,7 @@ namespace RiemannClientTests
             int expectedTimestamp = (int)(time - new DateTime(1970, 1, 1)).TotalSeconds;
 
             List<EventRecord> results;
-            using (var client = new RiemannTcpClient())
+            using (var client = new CompositeClient(maxDatagramSize: 0))
             {
                 const string serviceName = "Should_convert_time_to_unix_epoch_seconds";
                 client.SendAsync(host: "tests",
@@ -73,10 +73,9 @@ namespace RiemannClientTests
         [Test]
         public void Should_expose_connection_failures()
         {
-            using (var client = new RiemannTcpClient(port: 9999, hostname: "monkey-trumpets"))
+            using (var client = new CompositeClient(port: 9999, hostname: "monkey-trumpets"))
             {
-                Assert.Throws<SocketException>(() => client.Query("anyone there..?"));
-                Assert.Throws<SocketException>(() => client.Send(host: "broken"));
+                Assert.Throws<SocketException>(() => client.Query("BANG!"));
             }
         }
 
@@ -100,9 +99,9 @@ namespace RiemannClientTests
                          select batches;
                         
             
-            var tasks = states.Select(s => new RiemannTcpClient().SendAsync(s.ToArray())).ToArray();
+            var tasks = states.Select(s => new CompositeClient(maxDatagramSize:0).SendAsync(s.ToArray())).ToArray();
             Task.WaitAll(tasks);
-            using (var client = new RiemannTcpClient())
+            using (var client = new CompositeClient())
             {
                 var query = string.Format("service=~ \"{0}%\"", serviceNameRoot);
                 results = client.QueryAsync(query).Result.ToList();

@@ -36,10 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\protobuf-net.2.0.0.480\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="RiemannClient, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RiemannClient.0.0.1.1\lib\net45\RiemannClient.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +52,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="riemann.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RiemannClient\RiemannClient.csproj">
+      <Project>{b7df1905-568f-40e3-9e46-5bc30d82dc6e}</Project>
+      <Name>RiemannClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

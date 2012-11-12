@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompositeClient.cs" />
     <Compile Include="Contract\Message.cs" />
     <Compile Include="Contract\EventRecord.cs" />
     <Compile Include="Contract\MessageBuilder.cs" />

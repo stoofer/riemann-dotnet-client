@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using ProtoBuf;
-using RiemannClient.Contract;
 
 namespace RiemannClient
 {
@@ -13,13 +8,14 @@ namespace RiemannClient
     {
         private readonly string hostname;
         private readonly int port;
+        private readonly long maxDatagramSize;
         private UdpClient client;
-        private const long MaxDatagramSize = 16384;
-
-        public RiemannUdpClient(string hostname = "localhost", int port = 5555)
+        
+        public RiemannUdpClient(string hostname = "localhost", int port = 5555, long maxDatagramSize = CompositeClient.MaxDatagramSize)
         {
             this.hostname = hostname;
             this.port = port;
+            this.maxDatagramSize = maxDatagramSize;
         }
 
         public void Dispose()
@@ -35,80 +31,20 @@ namespace RiemannClient
             client = null;
         }
 
-        public void Send(
-            string host = null, 
-            float? metric = null, 
-            string service = null, 
-            string state = "ok", 
-            string description = null,
-            float? ttl = null,
-            IEnumerable<string> tags = null,
-            DateTime? timestamp = null)
-        {
-            Send(new StateEntry(
-                     host: host,
-                     service: service,
-                     state: state,
-                     metric: metric,
-                     description: description,
-                     timeToLiveInSeconds: ttl,
-                     tags: (tags ?? new string[0]).ToArray(),
-                     timestamp: timestamp));
-        }
-
-        public async Task SendAsync(
-            string host = null, 
-            float? metric = null, 
-            string service = null, 
-            string state = "ok", 
-            string description = null,
-            float? ttl = null,
-            IEnumerable<string> tags = null,
-            DateTime? timestamp = null)
-        {
-            await SendAsync(new StateEntry(
-                                host: host,
-                                service: service,
-                                state: state,
-                                metric: metric,
-                                description: description,
-                                timeToLiveInSeconds: ttl,
-                                tags: (tags ?? new string[0]).ToArray(),
-                                timestamp: timestamp));
-        }
-
-        public void Send(params StateEntry[] states)
-        {
-            try
-            {
-                SendAsync(states).Wait();
-            }
-            catch (AggregateException ae)
-            {
-                throw ae.Flatten().InnerException;
-            }
-        }
-        
-        public async Task SendAsync(params StateEntry[] states)
-        {
-            await SendAsync(states.ToMessage());
-        }
-
-
-
-        private async Task SendAsync(Message message)
+        public async Task SendAsync(byte[] buffer)
         {
             EnsureConnected();
-            using (var stream = new MemoryStream())
-            {
-                Serializer.Serialize(stream, message);
-                var buffer = stream.GetBuffer();
-                var length = (int) stream.Length;
-                if(length > MaxDatagramSize)
-                    throw new InvalidOperationException(string.Format("Cannot send messages grater than {0} bytes over UDP", MaxDatagramSize));
-                await Task<int>.Factory.StartNew(() => client.Send(buffer, length, hostname, port));
-            }
+            if (!CanSend(buffer))
+                throw new InvalidOperationException(string.Format("Cannot send messages greater than {0} bytes over UDP",
+                                                                  CompositeClient.MaxDatagramSize));
+            await Task<int>.Factory.StartNew(() => client.Send(buffer, buffer.Length, hostname, port));
         }
+
+        public bool CanSend(byte[] buffer)
+        {
+            return buffer.Length <= maxDatagramSize;
+        }
+
 
         private void EnsureConnected()
         {

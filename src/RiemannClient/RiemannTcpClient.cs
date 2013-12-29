@@ -75,8 +75,8 @@ namespace RiemannClient
                 else
                     await c.ConnectAsync(hostname, port);
                 client = c;
-                //client.SendTimeout = this.sendTimeout;
-                //client.ReceiveTimeout = this.receiveTimeout;
+                client.SendTimeout = this.sendTimeout;
+                client.ReceiveTimeout = this.receiveTimeout;
             }
             return client.GetStream();
         }

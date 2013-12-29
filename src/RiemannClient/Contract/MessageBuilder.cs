@@ -15,6 +15,11 @@ namespace RiemannClient.Contract
             return new Message { States = states };
         }
 
+        public static Message ToMessage(this EventRecord[] events)
+        {
+            return new Message { Events = events };
+        }
+
         public static byte[] Serialize(this Message message)
         {
             var stream = new MemoryStream();

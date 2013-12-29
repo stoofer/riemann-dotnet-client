@@ -12,9 +12,9 @@ namespace RiemannClient
         private readonly RiemannUdpClient udpClient;
         public const long MaxDatagramSize = 16384;
 
-        public CompositeClient(string hostname = "localhost", int port = 5555, long maxDatagramSize = MaxDatagramSize)
+        public CompositeClient(string hostname = "localhost", int port = 5555, long maxDatagramSize = MaxDatagramSize, int connectTimeout = 0, int receiveTimeout = 0, int sendTimeout = 0)
         {
-            tcpClient = new RiemannTcpClient(hostname,port);
+            tcpClient = new RiemannTcpClient(hostname,port, connectTimeout, receiveTimeout, sendTimeout);
             udpClient = new RiemannUdpClient(hostname,port, maxDatagramSize);
         } 
 
@@ -34,7 +34,7 @@ namespace RiemannClient
             IEnumerable<string> tags = null,
             DateTime? timestamp = null)
         {
-            Send(new StateEntry(
+            Send(new EventRecord(
                      host: host,
                      service: service,
                      state: state,
@@ -55,7 +55,7 @@ namespace RiemannClient
             IEnumerable<string> tags = null,
             DateTime? timestamp = null)
         {
-            await SendAsync(new StateEntry(
+            await SendAsync(new EventRecord(
                                 host: host,
                                 service: service,
                                 state: state,
@@ -66,11 +66,11 @@ namespace RiemannClient
                                 timestamp: timestamp));
         }
 
-        public void Send(params StateEntry[] states)
+        public void Send(params EventRecord[] events)
         {
             try
             {
-                SendAsync(states).Wait();
+                SendAsync(events).Wait();
             }
             catch (AggregateException ae)
             {
@@ -90,9 +90,9 @@ namespace RiemannClient
             }
         }
 
-        public async Task SendAsync(params StateEntry[] states)
+        public async Task SendAsync(params EventRecord[] events)
         {
-            var buffer = states.ToMessage().Serialize();
+            var buffer = events.ToMessage().Serialize();
 
             if (udpClient.CanSend(buffer))
                 await udpClient.SendAsync(buffer);

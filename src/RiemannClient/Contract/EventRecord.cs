@@ -1,10 +1,35 @@
 using ProtoBuf;
+using System;
 
 namespace RiemannClient.Contract
 {
     [ProtoContract]
     public class EventRecord 
     {
+        public EventRecord()
+        {
+
+        }
+
+        public EventRecord(DateTime? timestamp = null, 
+            string state = null, 
+            string service = null, 
+            string host = null, 
+            string description = null, 
+            string[] tags = null, 
+            float? timeToLiveInSeconds = null,
+            float? metric = null)
+        {
+            Time = timestamp.ToUnixEpochSeconds();
+            State = state;
+            Service = service;
+            Host = host;
+            Description = description;
+            Tags = tags;
+            TTL = timeToLiveInSeconds;
+            metric_f = metric;
+        }
+
         [ProtoMember(1)]
         public long? Time{get;set;}
   

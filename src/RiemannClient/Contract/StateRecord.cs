@@ -13,8 +13,7 @@ namespace RiemannClient.Contract
             string host = null, 
             string description = null, 
             string[] tags = null, 
-            float? timeToLiveInSeconds = null, 
-            float? metric = null)
+            float? timeToLiveInSeconds = null)
         {
             Time = timestamp.ToUnixEpochSeconds();
             State = state;
@@ -23,7 +22,6 @@ namespace RiemannClient.Contract
             Description = description;
             Tags = tags;
             TTL = timeToLiveInSeconds;
-            Metric = metric;
         }
 
         [ProtoMember(1)]
@@ -49,8 +47,5 @@ namespace RiemannClient.Contract
 
         [ProtoMember(8)]
         public float? TTL{get;set;}
-  
-        [ProtoMember(15)]
-        public float? Metric{get;set;}
     }
 }

@@ -90,16 +90,16 @@ namespace RiemannClientTests
 
             var states = from idx in Enumerable.Range(1, 1000)
                          let state =
-                             new StateEntry(host: host,
+                             new EventRecord(host: host,
                                             service: serviceNameRoot + idx,
                                             state: "ok", metric: idx,
                                             timeToLiveInSeconds: 10)
                          group state by idx%10
                          into batches
                          select batches;
-                        
-            
-            var tasks = states.Select(s => new CompositeClient(maxDatagramSize:0).SendAsync(s.ToArray())).ToArray();
+
+
+            var tasks = states.Select(s => new CompositeClient(maxDatagramSize: 0).SendAsync(s.ToArray())).ToArray();
             Task.WaitAll(tasks);
             using (var client = new CompositeClient())
             {

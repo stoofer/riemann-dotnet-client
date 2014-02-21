@@ -10,7 +10,6 @@ message State {
   optional bool once = 6;
   repeated string tags = 7;
   optional float ttl = 8;
-  optional float metric_f = 15;
 }
 
 message Event {
@@ -21,7 +20,7 @@ message Event {
   optional string description = 5;
   repeated string tags = 7;
   optional float ttl = 8;
-  optional float metric_f = 15;
+  optional float metric_f = 15 [default=nan];
 }
 
 message Query {

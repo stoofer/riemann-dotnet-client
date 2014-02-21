@@ -62,7 +62,7 @@ namespace RiemannClientTests
 
             var states = from idx in Enumerable.Range(1, 100)
                          let state =
-                             new StateEntry(host: host,
+                             new EventRecord(host: host,
                                             service: serviceNameRoot + idx,
                                             state: "ok", metric: idx,
                                             timeToLiveInSeconds: 10)

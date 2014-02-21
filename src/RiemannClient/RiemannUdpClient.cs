@@ -10,7 +10,7 @@ namespace RiemannClient
         private readonly int port;
         private readonly long maxDatagramSize;
         private UdpClient client;
-        
+
         public RiemannUdpClient(string hostname = "localhost", int port = 5555, long maxDatagramSize = CompositeClient.MaxDatagramSize)
         {
             this.hostname = hostname;

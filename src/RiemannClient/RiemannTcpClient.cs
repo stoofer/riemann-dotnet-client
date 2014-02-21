@@ -11,12 +11,18 @@ namespace RiemannClient
     {
         private readonly string hostname;
         private readonly int port;
+        private readonly int connectTimeout;
+        private readonly int receiveTimeout;
+        private readonly int sendTimeout;
         private TcpClient client;
 
-        public RiemannTcpClient(string hostname = "localhost", int port = 5555)
+        public RiemannTcpClient(string hostname = "localhost", int port = 5555, int connectTimeout = 0, int receiveTimeout = 0, int sendTimeout = 0)
         {
             this.hostname = hostname;
             this.port = port;
+            this.connectTimeout = connectTimeout;
+            this.sendTimeout = sendTimeout;
+            this.receiveTimeout = receiveTimeout;
         }
 
         public void Dispose()
@@ -60,8 +66,17 @@ namespace RiemannClient
             if(client == null)
             {
                 var c = new TcpClient();
-                await c.ConnectAsync(hostname, port);
+                if (this.connectTimeout > 0)
+                {
+                    await Task.WhenAny(c.ConnectAsync(hostname, port), Task.Delay(this.connectTimeout));
+                    if (!c.Connected)
+                        throw new SocketException(10060);
+                }
+                else
+                    await c.ConnectAsync(hostname, port);
                 client = c;
+                client.SendTimeout = this.sendTimeout;
+                client.ReceiveTimeout = this.receiveTimeout;
             }
             return client.GetStream();
         }

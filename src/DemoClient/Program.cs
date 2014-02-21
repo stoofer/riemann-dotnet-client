@@ -13,8 +13,8 @@ namespace DemoClient
             {
                 client.Send(service: "Demo Client",state: "warn", description: "Simple event description");
 
-                client.Send(new StateEntry { Host = "c#", Service = "Demo Client (1)", State = "ok", Metric = 34.5f },
-                            new StateEntry { Service = "Demo Client (2)", Metric = rand.Next(100)  });
+                client.Send(new EventRecord { Host = "c#", Service = "Demo Client (1)", State = "ok", metric_f = 34.5f },
+                            new EventRecord { Service = "Demo Client (2)", metric_f = rand.Next(100) });
                 
                 var results = client.Query("service =~ \"Demo%\"");
 
